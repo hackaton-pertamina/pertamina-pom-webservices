@@ -3,6 +3,7 @@ const router = express.Router();
 
 const {
   getAll,
+  getAllByType,
   getById,
   addNew,
   patchById,
@@ -10,6 +11,7 @@ const {
 } = require('./functions');
 
 router.get('/', getAll);
+router.get('/type/:type', getAllByType);
 router.get('/:id', getById);
 router.post('/', addNew);
 router.put('/:id', patchById);
