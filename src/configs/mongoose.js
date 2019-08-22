@@ -2,10 +2,18 @@ require('dotenv').config();
 
 const mongoose  = require('mongoose');
 
-mongoose.connect(
-  `mongodb://${process.env.DATABASE_HOST}/${process.env.DATABASE_NAME}`,
-  { useNewUrlParser: true }
-);
+if (process.env.ENVIRONTMENT === 'PRODUCTION') {
+  mongoose.connect(
+    `mongodb+srv://${process.env.DATABASE_USER}:${process.env.DATABASE_PASSWORD}@cluster0-ky5wb.mongodb.net/test?retryWrites=true&w=majority`,
+    { useNewUrlParser: true }
+  );
+} else {
+  mongoose.connect(
+    `mongodb://${process.env.DATABASE_HOST}/${process.env.DATABASE_NAME}`,
+    { useNewUrlParser: true }
+  );
+}
+
 
 const db = mongoose.connection;
 
