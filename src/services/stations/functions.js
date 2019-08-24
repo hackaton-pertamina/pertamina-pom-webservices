@@ -5,17 +5,9 @@ const StationModel = require('./model');
 const getAll = async (req, res) => {
   try {
     const {
-      withDeleted,
       lat = null,
       lng = null,
-      type = "GAS_STATION"
     } = req.query;
-    
-    let query = { is_deleted: false };
-  
-    if (withDeleted) {
-      delete query.is_deleted;
-    }
   
     const stations = await StationModel.find()
       .populate('products')
@@ -69,11 +61,7 @@ const getByType = async (req, res) => {
       }
     } = req;
     
-    let query = { is_deleted: false, type };
-  
-    if (withDeleted) {
-      delete query.is_deleted;
-    }
+    let query = { type };
   
     const stations = await StationModel.find(query)
       .populate('products')
@@ -106,7 +94,7 @@ const getByType = async (req, res) => {
       }
       res.status(200).json({ data: result });
     }
-    res.status(404).json({ messages: 'Gas stations is not exists' });
+    res.status(200).json({ messages: 'Gas stations is not exists', data: null });
 
   } catch (error) {
     res.status(500).json({ messages: `${error}`});
