@@ -20,7 +20,7 @@ const getAll = async (req, res) => {
       res.status(200).json({ data });
     }
 
-    res.status(404).json({ messages: 'Bundle is empty' })
+    res.status(200).json({ messages: 'Bundle is empty', data: null })
 
   } catch (error) {
     res.status(500).json({ messages: `${error} ` });
@@ -37,7 +37,7 @@ const getById = async (req, res) => {
       res.status(200).json({ data });
     }
 
-    res.status(404).json({ messages: `Bundle ${id} not exist `});
+    res.status(200).json({ messages: `Bundle ${id} not exist `, data: null});
 
   } catch (error) {
     res.status(500).json({ messages: `${error} ` });
@@ -98,7 +98,7 @@ const patchById = async (req, res) => {
     const bundle = await BundleModel.findById(id);
 
     if (!bundle) {
-      res.status(404).json({ messages: `bundle ${id} is not exists` });
+      res.status(200).json({ messages: `bundle ${id} is not exists`, data: null });
     }
   
     const patched = await BundleModel.findByIdAndUpdate(id, {

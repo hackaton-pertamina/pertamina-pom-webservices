@@ -29,7 +29,7 @@ const getAllByType = async (req, res) => {
     const data = await ProductModel.find({ type });
   
     if (!data && data.length <= 0) {
-      res.status(404).json({ messages: `product with ${type} is not exists` });
+      res.status(200).json({ messages: `product with ${type} is not exists`, data: null });
     }
   
     res.status(200).json({ data });
@@ -98,7 +98,7 @@ const patchById = async (req, res) => {
     const product = await ProductModel.findById(id);
 
     if (!product) {
-      res.status(404).json({ messages: 'product is not found' });
+      res.status(200).json({ messages: 'product is not found', data: null });
     }
     
     const data = await ProductModel.findByIdAndUpdate(id, {

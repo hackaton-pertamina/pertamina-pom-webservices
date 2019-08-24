@@ -24,7 +24,7 @@ const getAll = async (req, res) => {
       res.status(200).json({ data });
     }
 
-    res.status(404).json({ messages: `you've haven't ordered yet`})
+    res.status(200).json({ messages: `you've haven't ordered yet`, data: null })
 
   } catch (error) {
     res.status(500).json({ messages: `${error}` });
@@ -52,7 +52,7 @@ const getAllByType = async (req, res) => {
       res.status(200).json({ data });
     }
 
-    res.status(404).json({ messages: `you've haven't ordered yet`})
+    res.status(200).json({ messages: `you've haven't ordered yet`, data: null })
 
   } catch (error) {
     res.status(500).json({ messages: `${error}` });
@@ -72,7 +72,7 @@ const getById = async (req, res) => {
       res.status(200).json({ data });
     }
 
-    res.status(404).json({ messages: `You've haven't ordered yet ` });
+    res.status(200).json({ messages: `You've haven't ordered yet `, data: null });
 
   } catch(error) {
     res.status(500).json({ messages: `${error}` });
@@ -108,7 +108,7 @@ const addNew = async (req, res) => {
       // TODO: Change to one only 
       const product = await ProductModel.findById(id);
       if (!product) {
-        res.status(404).json({ messages: 'Product is not exists '});
+        res.status(200).json({ messages: 'Product is not exists ', data: null });
       }
 
       data = { ...data, product };

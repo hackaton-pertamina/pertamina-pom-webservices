@@ -22,7 +22,7 @@ const getAll = async (req, res) => {
       res.status(200).json({ data });
     }
 
-    res.status(404).json({ messages: 'Booking is empty' })
+    res.status(200).json({ messages: 'Booking is empty', data: null })
 
   } catch (error) {
     res.status(500).json({ messages: `${error} ` });
@@ -41,7 +41,7 @@ const getById = async (req, res) => {
       res.status(200).json({ data });
     }
 
-    res.status(404).json({ messages: `Booking ${id} not exist `});
+    res.status(200).json({ messages: `Booking ${id} not exist `, data: null });
 
   } catch (error) {
     res.status(500).json({ messages: `${error} ` });
@@ -92,7 +92,7 @@ const patchById = async (req, res) => {
     const booking = await BookingModel.findById(id);
 
     if (!booking) {
-      res.status(404).json({ messages: `booking ${id} is not exists` });
+      res.status(200).json({ messages: `booking ${id} is not exists`, data: null });
     }
   
     const patched = await BookingModel.findByIdAndUpdate(id, {

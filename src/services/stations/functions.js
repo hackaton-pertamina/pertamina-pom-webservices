@@ -40,7 +40,7 @@ const getAll = async (req, res) => {
       }
       res.status(200).json({ data: result });
     }
-    res.status(404).json({ messages: 'Gas stations is not exists' });
+    res.status(200).json({ messages: 'Gas stations is not exists', data: null });
 
   } catch (error) {
     res.status(500).json({ messages: `${error}`});
