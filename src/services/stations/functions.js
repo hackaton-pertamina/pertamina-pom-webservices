@@ -1,5 +1,6 @@
-const StationModel = require('./model');
 const geolib = require('geolib');
+const moment = require('moment');
+const StationModel = require('./model');
 
 const getAll = async (req, res) => {
   try {
@@ -25,6 +26,9 @@ const getAll = async (req, res) => {
       // count distances
       if (lat && lng) {
         result = stations.map(station => {
+
+          const is_open = moment().isBefore(moment(station.closed_at, "HH:mm"))
+          && moment().isAfter(moment(station.open_at, "HH:mm"));
           
           let distance = geolib.getDistance(
             { latitude: lat, longitude: lng },
@@ -35,7 +39,11 @@ const getAll = async (req, res) => {
             1
           );
 
-          return { ...station._doc, distance: (parseFloat(distance) / 1000) };
+          return {
+            ...station._doc,
+            is_open,
+            distance: (parseFloat(distance) / 1000),
+          };
         });
       }
       res.status(200).json({ data: result });
@@ -48,24 +56,62 @@ const getAll = async (req, res) => {
 
 };
 
-const getByType = (req, res) => {
-  const { type = "GAS_STATION" } = req.params;
-
-  let query = {
-    type
-  };
-
-  StationModel.find(query, (err, result) =>{
-    if (err) {
-      res.status(500).json({ messages: `${err}`});
+const getByType = async (req, res) => {
+   try {
+    const {
+      query: {
+        withDeleted,
+        lat = null,
+        lng = null,
+      },
+      params: {
+        type = 'GAS_STATION',
+      }
+    } = req;
+    
+    let query = { is_deleted: false, type };
+  
+    if (withDeleted) {
+      delete query.is_deleted;
     }
+  
+    const stations = await StationModel.find(query)
+      .populate('products')
+      .populate('facilities');
 
-    res.status(200).json({
-      data: result,
-    });
-  })
-  .populate('products')
-  .populate('facilities');
+    if (stations && stations.length >= 1) {
+      let result = stations;
+      // count distances
+      if (lat && lng) {
+        result = stations.map(station => {
+
+          const is_open = moment().isBefore(moment(station.closed_at, "HH:mm"))
+          && moment().isAfter(moment(station.open_at, "HH:mm"));
+          
+          let distance = geolib.getDistance(
+            { latitude: lat, longitude: lng },
+            {
+              latitude: station.lat,
+              longitude: station.lng,
+            },
+            1
+          );
+
+          return {
+            ...station._doc,
+            is_open,
+            distance: (parseFloat(distance) / 1000),
+          };
+        });
+      }
+      res.status(200).json({ data: result });
+    }
+    res.status(404).json({ messages: 'Gas stations is not exists' });
+
+  } catch (error) {
+    res.status(500).json({ messages: `${error}`});
+  }
+
 };
 
 const getById = (req, res) => {
