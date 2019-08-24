@@ -91,6 +91,7 @@ const addNew = async (req, res) => {
         product: productId = null,
         status = 'ON_PROGRESS',
         administrative_cost = 1500,
+        payment_method = 'LINK_AJA',
         quantity,
       }
     } = req;
@@ -168,7 +169,15 @@ const addNew = async (req, res) => {
 
     total += administrative_cost;
 
-    await UserModel.findByIdAndUpdate(data.user, { link_aja_balance: LINK_AJA_BALANCE - total });
+    if (payment_method === 'LINK_AJA') {
+      await UserModel.findByIdAndUpdate(data.user, { link_aja_balance: LINK_AJA_BALANCE - total });
+    } else if (payment_method === 'SUBSCRIPTION') {
+      const subscribe = await SubscriptionModel.findOne({ user: user._id });
+      if (subscribe) {
+        await SubscriptionModel.findByIdAndUpdate(subscribe._id, { balance: subscribe.balance - quantity })
+        data = { ...data, balance: subscribe.balance - quantity };
+      }
+    }
 
     data = {
       ...data,
