@@ -29,7 +29,7 @@ const getAllByType = async (req, res) => {
     const data = await ProductModel.find({ type });
   
     if (!data && data.length <= 0) {
-      res.status(404).json({ error: `product with ${type} is not exists` });
+      res.status(404).json({ messages: `product with ${type} is not exists` });
     }
   
     res.status(200).json({ data });
@@ -45,7 +45,7 @@ const getById = async (req, res) => {
     const data = await ProductModel.findById(id);
 
     if (!data) {
-      res.status(400).json({ error: `product not exist` });
+      res.status(400).json({ messages: `product not exist` });
     }
 
     res.status(200).json({ data });
@@ -98,7 +98,7 @@ const patchById = async (req, res) => {
     const product = await ProductModel.findById(id);
 
     if (!product) {
-      res.status(404).json({ error: 'product is not found' });
+      res.status(404).json({ messages: 'product is not found' });
     }
     
     const data = await ProductModel.findByIdAndUpdate(id, {
@@ -124,7 +124,7 @@ const deleteById = async (req, res) => {
     
     res.status(200).json({ data: deleted });
   } catch (error) {
-    res.status(500).json({ error: `error ${error}` });
+    res.status(500).json({ messages: `error ${error}` });
   }
 };
 
