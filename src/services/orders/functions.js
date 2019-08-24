@@ -194,7 +194,7 @@ const deleteById = async (req, res) => {
     const result = await OrderModel.findByIdAndDelete(id);
     res.status(200).json({ data: result });
   } catch(error) {
-    res.status(500).json({ error: err });
+    res.status(500).json({ error: `${error}` });
   }
 };
 

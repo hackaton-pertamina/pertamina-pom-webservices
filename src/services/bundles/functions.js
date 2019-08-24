@@ -1,98 +1,143 @@
 const BundleModel = require('./model');
 
-const getAll = (req, res) => {
-  const { withDeleted } = req.query;
+const getAll = async (req, res) => {
+  try {
+    const {
+      query: {
+        withDeleted,
+      },
+    } = req;
 
-  let query = { is_deleted: false };
+    let query = { is_deleted: false };
 
-  if (withDeleted) {
-    delete query.is_deleted
+    if (withDeleted) {
+      delete query.is_deleted
+    }
+
+    const data = await BundleModel.find(query, (err, result)).populate('products');
+    
+    if (data && data.length > 0) {
+      res.status(200).json({ data });
+    }
+
+    res.status(404).json({ message: 'Bundle is empty' })
+
+  } catch (error) {
+    res.status(500).json({ error: `${error} ` });
   }
-
-  BundleModel.find(query, (err, result) =>{
-    if (err) {
-      res.status(500).json({ error: err });
-    }
-
-    res.status(200).json({
-      data: result,
-    });
-  }).populate('products');
 };
 
-const getById = (req, res) => {
-  const { id } = req.params;
+const getById = async (req, res) => {
+  try {
+    const { params: { id } } = req;
   
-  BundleModel.findById(id, (err, result) => {
-    if (err) {
-      res.status(500).json({ error: err });
+    const data = await BundleModel.findById(id).populate('products');
+      
+    if ( data ) {
+      res.status(200).json({ data });
     }
 
-    res.status(200).json({ data: result });
-  }).populate('products');
+    res.status(404).json({ message: `Bundle ${id} not exist `});
+
+  } catch (error) {
+    res.status(500).json({ error: `${error} ` });
+  }
 };
 
-const addNew = (req, res) => {
-  const {
-    name,
-    price,
-    duration_in_days,
-    quantity,
-    is_deleted = false,
-    products,
-  } = req.body;
+const addNew = async (req, res) => {
+  try {
+    const {
+      body: {
+        name,
+        type,
+        descriptions,
+        price,
+        duration_in_days,
+        quantity,
+        product,
+        is_deleted = false,
+      }
+    } = req;
+  
+    const data = await BundleModel({
+      name,
+      type,
+      descriptions,
+      price,
+      duration_in_days,
+      quantity,
+      product,
+      is_deleted,
+    }).save();
 
-  BundleModel({
-    name,
-    price,
-    duration_in_days,
-    quantity,
-    is_deleted,
-    products,
-  })
-  .save((err, result) => {
-    if (err) {
-      res.status(500).json({ error: err });
+    if (data) {
+      res.status(200).json({ data });
     }
-    res.status(200).json({ data: result });
-  });
+
+    res.status(422).json({ message: 'could not create new bundle'});
+
+  } catch (error) {
+    res.status(500).json({ error: `${error} ` });
+  }
 };
 
-const patchById = (req, res) => {
-  const { id } = req.params;
-  const {
-    name,
-    price,
-    duration_in_days,
-    quantity,
-    is_deleted = false,
-    products,
-  } = req.body;
+const patchById = async (req, res) => {
+  try {
+    const {
+      params: { id },
+      body: {
+        name,
+        price,
+        duration_in_days,
+        quantity,
+        is_deleted,
+        products,
+      }
+    } = req;
 
-  BundleModel.findByIdAndUpdate(id, {
-    name,
-    price,
-    duration_in_days,
-    quantity,
-    is_deleted,
-    products,
-  }, (err, result) => {
-    if (err) {
-      res.status(500).json({ error: err });
+    const bundle = await BundleModel.findById(id);
+
+    if (!bundle) {
+      res.status(404).json({ messages: `bundle ${id} is not exists` });
     }
-    res.status(200).json({ data: result });
-  });
+  
+    const patched = await BundleModel.findByIdAndUpdate(id, {
+      name: name || bundle.name,
+      type: type || bundle.type,
+      descriptions: descriptions || bundle.descriptions,
+      price: price || bundle.price,
+      duration_in_days: duration_in_days || bundle.duration_in_days,
+      quantity: quantity || bundle.quantity,
+      product: product || bundle.product,
+      is_deleted: is_deleted || bundle.is_deleted,
+    });
+    
+    if (patched) {
+      res.status(200).json({ data: patched });
+    }
+    
+    res.status(422).json({ message: `could not patch bundle ${id}` });
+
+  } catch (error) {
+    res.status(500).json({ error: `${error} ` });
+  }
 };
 
-const deleteById = (req, res) => {
-  const { id } = req.params;
+const deleteById = async (req, res) => {
+  try {
+    const { id } = req.params;
 
-  BundleModel.findByIdAndUpdate(id, { is_deleted: true }, (err, result) => {
-    if (err) {
-      res.status(500).json({ error: err });
+    const result = await BundleModel.findByIdAndRemove(id);
+  
+    if (result) {
+      res.status(200).json({ data: result });
     }
-    res.status(200).json({ data: result });
-  });
+  
+    res.status(400).json({ message: 'Could not remove bundle'});
+
+  } catch(error) {
+    res.status(500).json({ message: `${error}` });
+  }
 };
 
 module.exports = {

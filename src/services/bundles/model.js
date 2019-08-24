@@ -8,7 +8,7 @@ const bundleSchema = new mongoose.Schema({
   duration_in_days: { type: Number, required: true },
   quantity: { type: Number, required: true },
   is_deleted: { type: Boolean, required: true },
-  products: {type: mongoose.Schema.Types.ObjectId, ref: 'products'},
+  product: {type: mongoose.Schema.Types.ObjectId, ref: 'products'},
 }, {
   timestamps: {
     createdAt: 'created_at',
