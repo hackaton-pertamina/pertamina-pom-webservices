@@ -11,7 +11,7 @@ const getAll = (req, res) => {
 
   StationModel.find(query, (err, result) =>{
     if (err) {
-      res.status(500).json({ error: err });
+      res.status(500).json({ messages: `${err}`});
     }
 
     res.status(200).json({
@@ -31,7 +31,7 @@ const getByType = (req, res) => {
 
   StationModel.find(query, (err, result) =>{
     if (err) {
-      res.status(500).json({ error: err });
+      res.status(500).json({ messages: `${err}`});
     }
 
     res.status(200).json({
@@ -47,7 +47,7 @@ const getById = (req, res) => {
   
   StationModel.findById(id, (err, result) => {
     if (err) {
-      res.status(500).json({ error: err });
+      res.status(500).json({ messages: `${err}`});
     }
 
     res.status(200).json({ data: result });
@@ -84,7 +84,7 @@ const addNew = (req, res) => {
   })
   .save((err, result) => {
     if (err) {
-      res.status(500).json({ error: err });
+      res.status(500).json({ messages: `${err}`});
     }
     res.status(200).json({ data: result });
   });
@@ -118,7 +118,7 @@ const patchById = (req, res) => {
     is_deleted,
   }, (err, result) => {
     if (err) {
-      res.status(500).json({ error: err });
+      res.status(500).json({ messages: `${err}`});
     }
     res.status(200).json({ data: result });
   });
@@ -129,7 +129,7 @@ const deleteById = (req, res) => {
 
   StationModel.findByIdAndDelete(id, { is_deleted: true }, (err, result) => {
     if (err) {
-      res.status(500).json({ error: err });
+      res.status(500).json({ messages: `${err}`});
     }
     res.status(200).json({ data: result });
   });

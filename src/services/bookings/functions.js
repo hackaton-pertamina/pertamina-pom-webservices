@@ -1,4 +1,4 @@
-const BundleModel = require('./model');
+const BookingModel = require('./model');
 
 const getAll = async (req, res) => {
   try {
@@ -14,13 +14,15 @@ const getAll = async (req, res) => {
       delete query.is_deleted
     }
 
-    const data = await BundleModel.find(query).populate('products');
+    const data = await BookingModel.find(query)
+      .populate('products')
+      .populate('stations');
     
     if (data && data.length > 0) {
       res.status(200).json({ data });
     }
 
-    res.status(404).json({ messages: 'Bundle is empty' })
+    res.status(404).json({ messages: 'Booking is empty' })
 
   } catch (error) {
     res.status(500).json({ messages: `${error} ` });
@@ -31,13 +33,15 @@ const getById = async (req, res) => {
   try {
     const { params: { id } } = req;
   
-    const data = await BundleModel.findById(id).populate('products');
+    const data = await BookingModel.findById(id)
+      .populate('products')
+      .populate('stations');
       
     if ( data ) {
       res.status(200).json({ data });
     }
 
-    res.status(404).json({ messages: `Bundle ${id} not exist `});
+    res.status(404).json({ messages: `Booking ${id} not exist `});
 
   } catch (error) {
     res.status(500).json({ messages: `${error} ` });
@@ -48,25 +52,17 @@ const addNew = async (req, res) => {
   try {
     const {
       body: {
-        name,
+        stations,
+        products,
         type,
-        descriptions,
-        price,
-        duration_in_days,
-        quantity,
-        product,
         is_deleted = false,
       }
     } = req;
   
-    const data = await BundleModel({
-      name,
+    const data = await BookingModel({
+      stations,
+      products,
       type,
-      descriptions,
-      price,
-      duration_in_days,
-      quantity,
-      product,
       is_deleted,
     }).save();
 
@@ -74,7 +70,7 @@ const addNew = async (req, res) => {
       res.status(200).json({ data });
     }
 
-    res.status(422).json({ messages: 'could not create new bundle'});
+    res.status(422).json({ messages: 'could not create new booking'});
 
   } catch (error) {
     res.status(500).json({ messages: `${error} ` });
@@ -86,37 +82,31 @@ const patchById = async (req, res) => {
     const {
       params: { id },
       body: {
-        name,
-        price,
-        duration_in_days,
-        quantity,
-        is_deleted,
+        stations,
         products,
+        type,
+        is_deleted,
       }
     } = req;
 
-    const bundle = await BundleModel.findById(id);
+    const booking = await BookingModel.findById(id);
 
-    if (!bundle) {
-      res.status(404).json({ messages: `bundle ${id} is not exists` });
+    if (!booking) {
+      res.status(404).json({ messages: `booking ${id} is not exists` });
     }
   
-    const patched = await BundleModel.findByIdAndUpdate(id, {
-      name: name || bundle.name,
-      type: type || bundle.type,
-      descriptions: descriptions || bundle.descriptions,
-      price: price || bundle.price,
-      duration_in_days: duration_in_days || bundle.duration_in_days,
-      quantity: quantity || bundle.quantity,
-      product: product || bundle.product,
-      is_deleted: is_deleted || bundle.is_deleted,
+    const patched = await BookingModel.findByIdAndUpdate(id, {
+      stations: stations|| booking.stations,
+      products: products|| booking.products,
+      type: type|| booking.type,
+      is_deleted: is_deleted|| booking.is_deleted,
     });
     
     if (patched) {
       res.status(200).json({ data: patched });
     }
     
-    res.status(422).json({ messages: `could not patch bundle ${id}` });
+    res.status(422).json({ messages: `could not patch booking ${id}` });
 
   } catch (error) {
     res.status(500).json({ messages: `${error} ` });
@@ -127,13 +117,13 @@ const deleteById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const result = await BundleModel.findByIdAndRemove(id);
+    const result = await BookingModel.findByIdAndRemove(id);
   
     if (result) {
       res.status(200).json({ data: result });
     }
   
-    res.status(400).json({ messages: 'Could not remove bundle'});
+    res.status(400).json({ messages: 'Could not remove booking'});
 
   } catch(error) {
     res.status(500).json({ messages: `${error}` });

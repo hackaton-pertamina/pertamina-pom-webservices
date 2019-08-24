@@ -44,7 +44,7 @@ const getAllByType = async (req, res) => {
     const data = await SubscriptionModel.find(query);
   
     if (!data || data.length <= 0) {
-      res.status(404).json({ error: `subscription with ${type} is not exists` });
+      res.status(404).json({ messages: `subscription with ${type} is not exists` });
     }
   
     res.status(200).json({ data });
@@ -117,7 +117,7 @@ const patchById = async (req, res) => {
     const subscription = await SubscriptionModel.findById(id);
 
     if (!subscription) {
-      res.status(404).json({ error: 'subscription is not found' });
+      res.status(404).json({ messages: 'subscription is not found' });
     }
     
     const data = await SubscriptionModel.findByIdAndUpdate(id, {
@@ -141,7 +141,7 @@ const deleteById = async (req, res) => {
     
     res.status(200).json({ data: deleted });
   } catch (error) {
-    res.status(500).json({ error: `error ${error}` });
+    res.status(500).json({ messages: `error ${error}` });
   }
 };
 

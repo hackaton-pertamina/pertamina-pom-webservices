@@ -25,7 +25,7 @@ const signUp = async (req, res) => {
     })
     .save((err, result) => {
       if (err) {
-        res.status(500).json({ error: err });
+        res.status(500).json({ messages: `${err}`});
       }
       res.status(200).json({ data: result });
     });

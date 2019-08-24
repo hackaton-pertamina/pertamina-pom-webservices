@@ -118,7 +118,7 @@ const addNew = async (req, res) => {
 
       const selectedBundle = await BundleModel.findById(bundle);
       if (!selectedBundle) {
-        res.status(400).json({ error: 'bundle not exists'});
+        res.status(400).json({ messages: 'bundle not exists'});
       }
 
       total += selectedBundle.price;
@@ -136,7 +136,7 @@ const addNew = async (req, res) => {
       const savedSubcription = await SubscriptionModel(newSubcription).save();
 
       if (!savedSubcription) {
-        res.status(400).json({ error: 'error when saving subcriptions'});
+        res.status(400).json({ messages: 'error when saving subcriptions'});
       }
 
       data = {

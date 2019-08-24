@@ -11,7 +11,7 @@ const getAll = (req, res) => {
 
   FacilityModel.find({}, (err, result) =>{
     if (err) {
-      res.status(500).json({ error: err });
+      res.status(500).json({ messages: `${err}`});
     }
 
     res.status(200).json({
@@ -25,7 +25,7 @@ const getById = (req, res) => {
   
   FacilityModel.findById(id, (err, result) => {
     if (err) {
-      res.status(500).json({ error: err });
+      res.status(500).json({ messages: `${err}`});
     }
 
     res.status(200).json({ data: result });
@@ -38,7 +38,7 @@ const addNew = (req, res) => {
   FacilityModel({ name, icon, is_deleted: false })
   .save((err, result) => {
     if (err) {
-      res.status(500).json({ error: err });
+      res.status(500).json({ messages: `${err}`});
     }
     res.status(200).json({ data: result });
   });
@@ -50,7 +50,7 @@ const patchById = (req, res) => {
 
   FacilityModel.findByIdAndUpdate(id, { name, icon, is_deleted }, (err, result) => {
     if (err) {
-      res.status(500).json({ error: err });
+      res.status(500).json({ messages: `${err}`});
     }
     res.status(200).json({ data: result });
   });
@@ -61,7 +61,7 @@ const deleteById = (req, res) => {
 
   FacilityModel.findByIdAndUpdate(id, { is_deleted: true }, (err, result) => {
     if (err) {
-      res.status(500).json({ error: err });
+      res.status(500).json({ messages: `${err}`});
     }
     res.status(200).json({ data: result });
   });
