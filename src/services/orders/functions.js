@@ -65,7 +65,7 @@ const getById = async (req, res) => {
     const { user, params: { id } } = req;
   
     const data = await OrderModel.findById(id)
-      .populate('products')
+      .populate('product')
       .populate('stations')
       .populate('user');
     
