@@ -20,7 +20,7 @@ const getAll = async (req, res) => {
       res.status(200).json({ data });
     }
 
-    res.status(404).json({ message: 'Bundle is empty' })
+    res.status(404).json({ messages: 'Bundle is empty' })
 
   } catch (error) {
     res.status(500).json({ error: `${error} ` });
@@ -37,7 +37,7 @@ const getById = async (req, res) => {
       res.status(200).json({ data });
     }
 
-    res.status(404).json({ message: `Bundle ${id} not exist `});
+    res.status(404).json({ messages: `Bundle ${id} not exist `});
 
   } catch (error) {
     res.status(500).json({ error: `${error} ` });
@@ -74,7 +74,7 @@ const addNew = async (req, res) => {
       res.status(200).json({ data });
     }
 
-    res.status(422).json({ message: 'could not create new bundle'});
+    res.status(422).json({ messages: 'could not create new bundle'});
 
   } catch (error) {
     res.status(500).json({ error: `${error} ` });
@@ -116,7 +116,7 @@ const patchById = async (req, res) => {
       res.status(200).json({ data: patched });
     }
     
-    res.status(422).json({ message: `could not patch bundle ${id}` });
+    res.status(422).json({ messages: `could not patch bundle ${id}` });
 
   } catch (error) {
     res.status(500).json({ error: `${error} ` });
@@ -133,10 +133,10 @@ const deleteById = async (req, res) => {
       res.status(200).json({ data: result });
     }
   
-    res.status(400).json({ message: 'Could not remove bundle'});
+    res.status(400).json({ messages: 'Could not remove bundle'});
 
   } catch(error) {
-    res.status(500).json({ message: `${error}` });
+    res.status(500).json({ messages: `${error}` });
   }
 };
 

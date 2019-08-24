@@ -23,7 +23,7 @@ const getAll = async (req, res) => {
 
     res.status(200).json({ data });
   } catch( error ) {
-    res.status(500).json({ error: `${error}` });
+    res.status(500).json({ messages: `${error}` });
   }
 };
 
@@ -49,7 +49,7 @@ const getAllByType = async (req, res) => {
   
     res.status(200).json({ data });
   } catch(error) {
-    res.status(500).json({ error: `${error}` });
+    res.status(500).json({ messages: `${error}` });
   }
 };
 
@@ -76,7 +76,7 @@ const getById = async (req, res) => {
     res.status(200).json({ data });
 
   } catch (error) {
-    res.status(500).json({ error: `${error}` });
+    res.status(500).json({ messages: `${error}` });
   }
 };
 
@@ -99,7 +99,7 @@ const addNew = async (req, res) => {
     res.status(200).json({ data });
 
   } catch(error) {
-    res.status(500).json({ error: `${error}` });
+    res.status(500).json({ messages: `${error}` });
   }
 };
 
@@ -129,7 +129,7 @@ const patchById = async (req, res) => {
 
     res.status(200).json({ data });
   } catch (error) {
-    res.status(500).json({ error: `${error}` });
+    res.status(500).json({ messages: `${error}` });
   }
 };
 
