@@ -6,13 +6,23 @@ const signUp = async (req, res) => {
   const {
    username,
    password,
+   avatar,
+   name,
+   link_aja_balance,
   } = req.body;
 
   try {
     // encrypt
     const encryptedPassword = await bcrypt.hash(password, 4);
     
-    UserModel({ username, password: encryptedPassword, is_deleted: false })
+    UserModel({
+      username,
+      password: encryptedPassword,
+      avatar,
+      name,
+      link_aja_balance,
+      is_deleted: false
+    })
     .save((err, result) => {
       if (err) {
         res.status(500).json({ error: err });
