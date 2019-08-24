@@ -3,6 +3,7 @@ const OrderModel = require('./model');
 const ProductModel = require('../products/model');
 const SubscriptionModel = require('../subscriptions/model');
 const BundleModel = require('../bundles/model');
+const UserModel = require('../users/model');
 
 const getAll = async (req, res) => {
   try {
@@ -85,15 +86,19 @@ const addNew = async (req, res) => {
       user,
       body: {
         station = null,
-        bundle = null,
         type = 'PETROL',
+        bundle = null,
+        product: productId = null,
         status = 'ON_PROGRESS',
         administrative_cost = 1500,
+        quantity,
       }
     } = req;
 
     let name = '';
     let total = 0;
+
+    const LINK_AJA_BALANCE = user.link_aja_balance;
 
     let data = {
       user: user._id,
@@ -101,17 +106,20 @@ const addNew = async (req, res) => {
       type,
       station,
       status,
+      product: productId,
     };
     
     if (type === 'PETROL') {
       name += '#PT';
       // TODO: Change to one only 
-      const product = await ProductModel.findById(id);
+      const product = await ProductModel.findById(productId);
       if (!product) {
         res.status(200).json({ messages: 'Product is not exists ', data: null });
       }
 
-      data = { ...data, product };
+      total = quantity * product.price;
+
+      data = { ...data, product, quantity, name };
 
     } else if (type === 'SUBSCRIPTION') {
       name += '#SB';
@@ -151,8 +159,11 @@ const addNew = async (req, res) => {
 
     total += administrative_cost;
 
-    data = { ...data, amount: total };
+    await UserModel.findByIdAndUpdate(data.user, { link_aja_balance: LINK_AJA_BALANCE - total });
 
+    data = { ...data, amount: total };
+    
+    // save as new order
     const result = await OrderModel(data).save();
 
     if (!result) {

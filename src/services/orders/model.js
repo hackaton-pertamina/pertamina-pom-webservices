@@ -46,20 +46,14 @@ const orderSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'bundles'
   },
-  
-  shopping_cart: {
-    type: [{
-      products: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'products',
-        require: true
-      },
-      quantity: {
-        type: Number,
-        required: true
-      },
-    }],
-    required: true,
+  product: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'products',
+    required: true
+  },
+  quantity: {
+    type: Number,
+    required: true
   },
 }, {
   timestamps: {
