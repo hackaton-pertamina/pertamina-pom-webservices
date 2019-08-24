@@ -1,5 +1,7 @@
 const geolib = require('geolib');
 const moment = require('moment');
+const faker = require('faker');
+
 const StationModel = require('./model');
 
 const getAll = async (req, res) => {
@@ -31,14 +33,45 @@ const getAll = async (req, res) => {
             1
           );
 
+          let nozzles = [];
+
+          const total_nozzles = faker.random.number({ min: 0, max: 12});
+          
+          for (let i = 0; i < total_nozzles; i++) {
+            const total_visitor = faker.random.number({ min: 0, max: 12});
+            nozzles.push({
+              wait_duration_minutes: (120 * total_visitor) / 60,
+              total_visitor,
+            })
+          }
+
+          // count average waiting time
+          let average_wait_duration = 0;
+          let sum_wait_duration = 0;
+          let total_visitors = 0;
+
+          nozzles.forEach(nozzle => {
+            sum_wait_duration += nozzle.wait_duration_minutes;
+            total_visitors += nozzle.total_visitor;
+          });
+
+          average_wait_duration = sum_wait_duration / nozzles.length;
+
           return {
             ...station._doc,
             is_open,
             distance: (parseFloat(distance) / 1000),
+            total_visitors,
+            average_wait_duration,
+            nozzles,
           };
         });
       }
-      res.status(200).json({ data: result });
+
+      // add waiting time 
+      res.status(200).json({
+        data: result,
+      });
     }
     res.status(200).json({ messages: 'Gas stations is not exists', data: null });
 
