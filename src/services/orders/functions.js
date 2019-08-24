@@ -89,8 +89,6 @@ const addNew = async (req, res) => {
         type = 'PETROL',
         status = 'ON_PROGRESS',
         administrative_cost = 1500,
-        is_deleted = false,
-        shopping_cart = false,
       }
     } = req;
 
@@ -107,35 +105,13 @@ const addNew = async (req, res) => {
     
     if (type === 'PETROL') {
       name += '#PT';
+      // TODO: Change to one only 
+      const product = await ProductModel.findById(id);
+      if (!product) {
+        res.status(404).json({ messages: 'Product is not exists '});
+      }
 
-      const products = await ProductModel.find({
-        _id: {
-          $all: shopping_cart.map(({ product }) => product),
-        }
-      });
-   
-      const cart = products.map(item => {
-        const { _id, price, name } = item;
-  
-        const current = shopping_cart.find(e => e.product == _id);
-        const amount = current.quantity * price;
-        
-        total += amount;
-  
-        return {
-          name,
-          price,
-          amount,
-          product: _id,
-          quantity: current.quantity,
-        };
-      });
-
-      data = {
-        ...data,
-        name,
-        shopping_cart: cart,
-      };
+      data = { ...data, product };
 
     } else if (type === 'SUBSCRIPTION') {
       name += '#SB';
@@ -175,12 +151,13 @@ const addNew = async (req, res) => {
 
     total += administrative_cost;
 
-    data = {
-      ...data,
-      amount: total,
-    };
+    data = { ...data, amount: total };
 
     const result = await OrderModel(data).save();
+
+    if (!result) {
+      res.status(400).json({ messages: 'Error when saving results' })
+    }
 
     res.status(200).json({ data: result });
 
