@@ -21,6 +21,6 @@ app.get('/', (req, res) => {
   res.status(200).json({ messages: "app started to /api "});
 });
 
-app.listen(process.env.APP_PORT || 5000,
-() => console.log(`app listening on port ${process.env.APP_PORT}!`)
+app.listen(process.env.PORT || 5000,
+() => console.log(`app listening on port ${process.env.PORT}!`)
 );
