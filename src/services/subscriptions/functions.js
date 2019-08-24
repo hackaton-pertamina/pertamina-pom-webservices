@@ -15,7 +15,10 @@ const getAll = async (req, res) => {
       delete query.is_deleted
     }
 
-    const data = await SubscriptionModel.find(query);
+    const data = await SubscriptionModel.find(query)
+      .populate('bundle')
+      .populate('user')
+      ;
 
     if (!data || data.length <= 0) {
       res.status(400).json({ messages: `subscription is not exist` });
@@ -137,7 +140,7 @@ const deleteById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const deleted = await SubscriptionModel.findByIdAndUpdate(id, { is_deleted: true });
+    const deleted = await SubscriptionModel.findByIdAndDelete(id);
     
     res.status(200).json({ data: deleted });
   } catch (error) {

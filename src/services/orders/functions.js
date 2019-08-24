@@ -141,6 +141,13 @@ const addNew = async (req, res) => {
         is_deleted: false,
       };
 
+      // check if user already has subscribe
+      const subscribes = await SubscriptionModel.find({ user: user._id });
+
+      if (subscribes) {
+        res.status(400).json({ messages: 'aleady subscribes'})
+      }
+
       const savedSubcription = await SubscriptionModel(newSubcription).save();
 
       if (!savedSubcription) {
@@ -151,6 +158,8 @@ const addNew = async (req, res) => {
         ...data,
         ...newSubcription,
         name,
+        quantity: 1,
+        product: selectedBundle.product,
       }
 
     } else if (type === 'BOOKING') {
