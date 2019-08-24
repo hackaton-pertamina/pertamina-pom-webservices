@@ -17,6 +17,7 @@ router.get('/:id', checkToken, getById);
 router.get('/type/:type', checkToken, getAllByType);
 router.post('/', checkToken, addNew);
 router.put('/:id', checkToken, patchById);
+router.get('/qr/:id', checkToken, patchById);
 router.delete('/:id', checkToken, deleteById);
 
 module.exports = router;

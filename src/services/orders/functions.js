@@ -170,7 +170,10 @@ const addNew = async (req, res) => {
 
     await UserModel.findByIdAndUpdate(data.user, { link_aja_balance: LINK_AJA_BALANCE - total });
 
-    data = { ...data, amount: total };
+    data = {
+      ...data,
+      amount: total,
+    };
     
     // save as new order
     const result = await OrderModel(data).save();
@@ -179,7 +182,10 @@ const addNew = async (req, res) => {
       res.status(400).json({ messages: 'Error when saving results' })
     }
 
-    res.status(200).json({ data: result });
+    res.status(200).json({ data: {
+      ...result._doc,
+      qr_link: `https://lets-gas-webservice.herokuapp.com/api/orders/qr/${result._doc._id}`
+    }});
 
   } catch(error) {
     res.status(500).json({ messages: `${error}` });
