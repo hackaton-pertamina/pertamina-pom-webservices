@@ -8,13 +8,7 @@ const getAll = async (req, res) => {
       },
     } = req;
 
-    let query = { is_deleted: false };
-
-    if (withDeleted) {
-      delete query.is_deleted
-    }
-
-    const data = await BundleModel.find(query).populate('products');
+    const data = await BundleModel.find().populate('product');
     
     if (data && data.length > 0) {
       res.status(200).json({ data });
@@ -31,7 +25,7 @@ const getById = async (req, res) => {
   try {
     const { params: { id } } = req;
   
-    const data = await BundleModel.findById(id).populate('products');
+    const data = await BundleModel.findById(id).populate('product');
       
     if ( data ) {
       res.status(200).json({ data });
@@ -91,7 +85,9 @@ const patchById = async (req, res) => {
         duration_in_days,
         quantity,
         is_deleted,
-        products,
+        product,
+        descriptions,
+        type,
       }
     } = req;
 
