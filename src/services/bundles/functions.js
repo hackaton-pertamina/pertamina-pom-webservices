@@ -5,10 +5,17 @@ const getAll = async (req, res) => {
     const {
       query: {
         withDeleted,
+        product,
       },
     } = req;
 
-    const data = await BundleModel.find().populate('product');
+    let query = {};
+
+    if (product) {
+      query = { product }
+    }
+
+    const data = await BundleModel.find(query).populate('product');
     
     if (data && data.length > 0) {
       res.status(200).json({ data });
